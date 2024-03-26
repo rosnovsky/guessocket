@@ -11,7 +11,7 @@ export default function Home() {
   const [players, setPlayers] = useState(new Set() as Set<string>);
   
   useEffect(() => {
-    const connection = new WebSocket('wss://rosnovsky.on.kanalo.dev/guessocket?token=41b7df96abc0f66c');
+    const connection = new WebSocket(process.env.KANALO_URL as string);
     setConnection(connection);
     setConnected(true);
     
