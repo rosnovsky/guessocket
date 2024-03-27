@@ -4,19 +4,17 @@ import { useEffect, useState } from 'react';
 import { Word } from './components/Word';
 import { Player } from './components/Player';
 
+const wsConnection = new WebSocket(process.env.NEXT_PUBLIC_KANALO_URL as string);
+
 export default function Home() {
-  const [connection, setConnection] = useState<WebSocket>();
+  const [connection, setConnection] = useState<WebSocket>(wsConnection);
   const [connected, setConnected] = useState(false);
   // const [player, setPlayer] = useState<any>();
   const [players, setPlayers] = useState(new Set() as Set<string>);
   
-  useEffect(() => {
-    const connection = new WebSocket(process.env.NEXT_PUBLIC_KANALO_URL as string);
-    setConnection(connection);
-    setConnected(true);
-    
+  useEffect(() => {    
     connection.onopen = (event) => {
-      // TODO: what can I do here?
+      setConnected(true);
     }
 
     connection.onmessage = (event: any) => {
@@ -29,8 +27,12 @@ export default function Home() {
         console.log("players", players)
       } 
     }
+
+    connection.onclose = (event: any) => {
+      setConnected(false);
+    }
     
-  }, [connected]);
+  }, [connection]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
